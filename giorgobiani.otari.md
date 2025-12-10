@@ -1,7 +1,7 @@
 <code style="color : red"> Ну в общем, 29/30 </code>
-$${\color{red}
-Ну в общем, 29/30
-}$$
+``` diff
+- Ну в общем, 29/30
+```
 # Java Mid-Term Exam
 
 **Student:** გიორგობიანი ოთარი
