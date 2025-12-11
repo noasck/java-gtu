@@ -1,48 +1,12 @@
 ```diff
-- в общем и целом - 25/30
-
-
-                       =_-___
-                     o    \__ \
-                    o       __| \
-                     o      \__  \
-                       oooo    \  \
-                                \  \
-  __________________             |   \
- |__________________|             \   |
-  \/\/\/\/\/\/\/\/\/     _----_    |   |
-   \/\/\/\/\/\/\/\/     |      \   |   |
-    \/\/\/\/\/\/\/      |       |    |  |
-     |/\/\/\/\/\|        |       \__/    |
-     |/\/\/\/\/\|         __---          |
-     |/\/\/\/\/\|       /   \            |
-                       |     |          |
-                       |   /            |
-                       |   \            |
-                       |   | \          |
-                       |   |   \____-----\
-                       |   |    \____-----
-                        |  |    |          \
-                        |  |   |             \
-                         \  \_|_      |       |
-                          \____/  ___/ \_____/\
-                             /    /       \     \
-                           /     /          \     \
-                          /    /              \    \
-                        /    /                  \    \
-                       /   /                      \   \
-                 /\   /  /                          \  |
-                |  \/ \/                              \/ \
-                 \    |                             __/   |
-                   \_/                            /______/
+- В общем и целом:
++ 21/30.
 ```
-
-
 # Java Mid-Term Exam
 
-**Student:** გვასალია ლუკა
+**Student:** ტონოიანი იური
 
-**Student ID:** 1705583
+**Student ID:** 1061946
 
 **Cheating detected:** Yes
 
@@ -53,11 +17,10 @@
 Что такое инкапсуляция (обе части определения)?
 
 ```
-Инкапсуляция - это ...praces sozdanie obiekta v pamiti pri pomashi operatera  new bizov konstruktara klasa.
+Инкапсуляция - позволяет скрывать данные от неправильного использования и
 ```
-
 ```diff
--инициализация, не инкапсуляция.
+-и? и что?
 ```
 
 ### Subtask 2
@@ -66,11 +29,11 @@
 
 ```
 Модификаторы доступа - это
-eto kluchivie slova b java kotorie ustanavlivaiut urovin vidimosti dlia chlenov klasa v samix klasax
-public - dostup otavsudu
-private - dostup predelax sbibo klasa
-package-private -dostup tolko b predelax svovo paketa
-protected -dostup  v predelax  cvovo paketa  iz bsex podklasov
+
+public - доступен из всех классов и пакетов
+private - только внутри класса
+package-private - доступ только внутри пакета
+protected - только внутри пакета и дочерних классах
 ```
 
 ### Subtask 3
@@ -96,24 +59,24 @@ protected -dostup  v predelax  cvovo paketa  iz bsex podklasov
 class User {
 
 	// TODO: указать модификатор доступа
-	protected String username;
+	String username;
 
 	// TODO: указать модификатор доступа
-	private String passwordHash;
+	String passwordHash;
 
 	// TODO: указать модификатор доступа
-	public User(String username, String passwordHash) {
+	User(String username, String passwordHash) {
 		this.username = username;
 		this.passwordHash = passwordHash;
 	}
 
 	// TODO: указать модификатор доступа
-	public boolean checkPassword(String hash) {
-		return this. passwordHash.equals(hash);
+	boolean checkPassword(String hash) {
+		return passwordHash.equals(hash);
 	}
 
 	// TODO: указать модификатор доступа
-	public String getUsername() {
+	String getUsername() {
 		return username;
 	}
 }
@@ -121,21 +84,21 @@ class User {
 class AdminUser extends User {
 
 	// TODO: указать модификатор доступа
-	protected int accessLevel;
+	int accessLevel;
 
 	// TODO: указать модификатор доступа
-	public AdminUser(String username, String passwordHash, int accessLevel) {
+	AdminUser(String username, String passwordHash, int accessLevel) {
 		super(username, passwordHash);
 		this.accessLevel = accessLevel;
 	}
 
 	// TODO: указать модификатор доступа
-	public boolean hasAccess(int requiredLevel) {
+	boolean hasAccess(int requiredLevel) {
 		return accessLevel >= requiredLevel;
 	}
 
 	// TODO: указать модификатор доступа
-	public int getAccessLevel() {
+	int getAccessLevel() {
 		return accessLevel;
 	}
 }
@@ -144,13 +107,6 @@ public class Main {
 	public static void main(String[] args) {
 
 		AdminUser admin = new AdminUser("root", "abc123hash", 10);
-		Sistem.out.println("Username:" + admin. getusername());
-		Sistem.out.println("Check password" ('12312321'):+admin.checkpassword
-		Sistem.out.println("Check password"('wrong'):+admin.checkpassword('wrong'));
-		Sistem.out.println("Access Level:"+ admin.getAccessLevel());
-
-
-
 
 		// вызвать все методы и поля,
 		// которые вы считаете публичными и вывести в stdout;
@@ -165,8 +121,8 @@ public class Main {
 
 ```
 
-```
--немного бред, но рациональное зерно где-то есть. 2/4
+```diff
+- 0/3
 ```
 
 
@@ -177,8 +133,11 @@ public class Main {
 Дать определение понятию “конструктор класса” в java. Что такое конструктор по умолчанию?
 
 ```
-Конструктор класса в Java - это ... cpecialni blok koda paxoji na metod kotori ispozuitsia dlia cozdanie obiekta klasaa inicializacii
-Конструктор по умолчанию (default constructor) - eto  konstruktor bez parametrov kotirie avtomatitiski generiruiut kompiliari java dlia klasa ecli vi ne opridelili b nem  ne odnovo cobstbibova konstriktora
+Конструктор класса в Java - специальный метод который вызывается при создании обьекта
+Конструктор по умолчанию (default constructor) - пустой
+```
+```diff
+- пустой как этот ответ
 ```
 
 ### Subtask 2
@@ -186,19 +145,22 @@ public class Main {
 Почему есть конструктор но нет деструктора? Почему метод finalize никогда не стоит использовать?
 
 ```
-1)avtomatiteski sbros munsora
-2)evo bizob ne garantiruer i neprdskazuem sgto negatrivno vliat na programi
+Деструктора нет, так как есть Garbage Collector, который автоматический удаляет неиспользованныне части кода.
 ```
+
 ```diff
--да кто вам про этот сбор мусора "посоветовал" написать? 10 из 10 работ - неправильный ответ. 1/2
+- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA. Если я прочитаю ещё где-то про деструктор и GC - выстрелю. НУ КТО ВАМ ТАКОЕ ПИШЕТ.
+- А Си? без GC и деструкторов нет.
+- А python? Есть и GC и деструкторы.
++ 10 из 10 бред
 ```
+
 ### Subtask 3
 
 Наследуются ли конструкторы? Как вызвать конструктор родительского класса?
 
 ```
-net ni nasleduit
-spomashiu kluchivova slova super(..)
+Конструкторы не наследуются,вызвать конструкторв родительского класса можно через super().
 ```
 
 ### Subtask 4
@@ -244,17 +206,42 @@ spomashiu kluchivova slova super(..)
 
 ```java
 class Printer3D {
-	private string model;
-	private int filamentLevel;
-	private int powerLevel;
-	private int objectsprinted;
+	String model;
+	Int filamentlevel;
+	int powerLevel;
+	public static int objectsPrinted;
 
-	public Printer3D(String m, int f, int p){
-		this.m = m; this.f = f; this.p = p; this.o =0;
-		Sistem.out.println
+	public Printer3D (String model, int fillamenLevel, int powerLevel) {
+		this.model = model;
+		this.filamentLevel = filamentLevel;
+		this.powerLevel = powerLevel;
 	}
+		public void printObject(int filamentNedeed, int powerNeeded) {
+			if (filamentLevel >= filaentNeeded && powerLevel >= powerNeeded) {
+				filamentLevel -= filamentNeeded;
+				powerLevel -= powerNeeded;
+				objectsPrinted++;
+				System.out.println("Success"); }
+				else {
+					System.println("Error");
+				}
+			}
+		}
+		public void refillFilament(int amount){
+			filamentLevel += amount;
+			System.out.println("Заряжен")
+		}
 
-}
+		public void printStatus(){
+			System.out.println(model);
+			System.out.println(filamentLevel);
+			System.out.println(powerLevel);
+			System.out.println(objectsPrinted);
+		}
+
+
+	public Printer3D(String model
+
 
 public class Main {
 	public static void main(String[] args) {
@@ -273,60 +260,29 @@ public class Main {
 	}
 }
 
+```diff
+- ну тут хоть попытались
+3/4
+```
+
 ```
 
 **Output:**
 
 ```
 Compilation error:
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:2: error: cannot find symbol
-	private string model;
-	        ^
-  symbol:   class string
-  location: class Printer3D
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:13: error: constructor Printer3D in class Printer3D cannot be applied to given types;
-		Printer3D printer = new Printer3D("Creality Ender 3", 500, 80);
-		                    ^
-  required: no arguments
-  found:    String,int,int
-  reason: actual and formal argument lists differ in length
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:15: error: cannot find symbol
-		printer.printStatus();
+C:\Users\GTU-Student\Desktop\New folder (3)\.\Main.java:23: error: unnamed classes are a preview feature and are disabled by default.
+		public void refillFilament(int amount){
 		       ^
-  symbol:   method printStatus()
-  location: variable printer of type Printer3D
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:16: error: cannot find symbol
-		printer.printObject(50, 10);
-		       ^
-  symbol:   method printObject(int,int)
-  location: variable printer of type Printer3D
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:17: error: cannot find symbol
-		printer.printObject(200, 40);
-		       ^
-  symbol:   method printObject(int,int)
-  location: variable printer of type Printer3D
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:21: error: cannot find symbol
-		printer.refillFilament(100);
-		       ^
-  symbol:   method refillFilament(int)
-  location: variable printer of type Printer3D
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:22: error: cannot find symbol
-		printer.recharge(20);
-		       ^
-  symbol:   method recharge(int)
-  location: variable printer of type Printer3D
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:24: error: cannot find symbol
-		printer.printStatus();
-		       ^
-  symbol:   method printStatus()
-  location: variable printer of type Printer3D
-8 errors
+  (use --enable-preview to enable unnamed classes)
+C:\Users\GTU-Student\Desktop\New folder (3)\.\Main.java:25: error: ';' expected
+			System.out.println("�������")
+			                             ^
+C:\Users\GTU-Student\Desktop\New folder (3)\.\Main.java:36: error: class, interface, enum, or record expected
+	public Printer3D(String model
+	       ^
+3 errors
 
-```
-
-```diff
--много ошибок. 2/4
--вам не нужно было делать задание ниже, у вас сданы все лабораторные работы.
 ```
 
 
@@ -337,7 +293,7 @@ C:\Users\GTU-512B-724A\Desktop\.\Main.java:24: error: cannot find symbol
 Дать определение полиморфизма типов в Java.
 
 ```
-eto cposobnost obiekta prinimat neskalko  porm lil cpocobnost metoda deistvovat po raznamu v zavisimosti ot tipa obiekta, k katoromu on prinimaitia
+
 ```
 
 ### Subtask 2
@@ -345,7 +301,7 @@ eto cposobnost obiekta prinimat neskalko  porm lil cpocobnost metoda deistvovat 
 Сравнить тип объекта и тип ссылки в Java (Pointer type vs Object type). Подсказка: это имеет отношение к переопределению методов.
 
 ```
-1)tip cilki opridilat kakie metodi dostupni dlia vizova 2)tip obiekta opridelaet kakaia realizacia metada budet vipolnina
+
 ```
 
 ### Subtask 3
@@ -353,7 +309,7 @@ eto cposobnost obiekta prinimat neskalko  porm lil cpocobnost metoda deistvovat 
 Как устроен специальный (параметрический) полиморфизм в джава? Как называется обеспечивающий его механизм
 
 ```
-1)eto fundamentalni koncepcia v teori tipov , kotoraia pozvalaet funkcii ili tipa dannix  bit napisanami ababshona .tak shtobi on mog abrabatavatznachenia bez zavisimosti
+
 ```
 
 ### Subtask 4
@@ -416,14 +372,22 @@ public class Main {
 }
 
 class Component {
-	public String id;
+}
+
+class RenderComponent extends Component {
+    public String id;
     public boolean enabled;
     public int priority;
-    Component(String id, boolean enabled, int priority){
-		this.id = id;
-		this.id = enabled;
-		this.id = priority;
+    public String meshName;
+
+    public RenderComponent(String id, boolean enabled, int priority, String meshName) {
+        super();
+        this.id = id;
+        this.enabled = enabled;
+        this.priority = priority;
+        this.meshName = meshName;
     }
+
     public void enable() {
         enabled = true;
         System.out.println(id + " enabled");
@@ -444,13 +408,21 @@ class Component {
     }
 }
 
-
-class RenderComponent extends Component {
+class PhysicsComponent extends Component {
     public String id;
     public boolean enabled;
     public int priority;
-    public String meshName;
-     public void enable() {
+    public double damping;
+
+    public PhysicsComponent(String id, boolean enabled, int priority, double damping) {
+        super();
+        this.id = id;
+        this.enabled = enabled;
+        this.priority = priority;
+        this.damping = damping;
+    }
+
+    public void enable() {
         enabled = true;
         System.out.println(id + " enabled");
     }
@@ -468,28 +440,6 @@ class RenderComponent extends Component {
         System.out.println(id + " applies physics with damping=" + damping);
         priority -= 1;
     }
-
-    public RenderComponent(String id, boolean enabled, int priority, String meshName) {
-        super( id, enabled,  priority  );
-        this.meshName = meshName;
-
-    }
-
-}
-
-class PhysicsComponent extends Component {
-    public String id;
-    public boolean enabled;
-    public int priority;
-    public double damping;
-
-
-    public PhysicsComponent(String id, boolean enabled, int priority, double damping) {
-        super(id,enabled,priority);
-        this.damping = damping;
-    }
-
-
 }
 
 ```
@@ -497,23 +447,5 @@ class PhysicsComponent extends Component {
 **Output:**
 
 ```
-Compilation error:
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:29: error: incompatible types: boolean cannot be converted to String
-		this.id = enabled;
-		          ^
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:30: error: incompatible types: int cannot be converted to String
-		this.id = priority;
-		          ^
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:47: error: cannot find symbol
-        System.out.println(id + " renders mesh " + meshName);
-                                                   ^
-  symbol:   variable meshName
-  location: class Component
-C:\Users\GTU-512B-724A\Desktop\.\Main.java:73: error: cannot find symbol
-        System.out.println(id + " applies physics with damping=" + damping);
-                                                                   ^
-  symbol:   variable damping
-  location: class RenderComponent
-4 errors
 
 ```
