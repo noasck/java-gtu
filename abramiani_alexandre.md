@@ -1,4 +1,4 @@
-<font color="red"> OБЩАЯ ОЦЕНКА: 26/30 баллов</font>
+<font color="red"> OБЩАЯ ОЦЕНКА: 25/30 баллов</font>
 
 # Java Mid-Term Exam
 
@@ -156,8 +156,16 @@ public class Main {
 }
 
 ```
+```diff
+	private String username;
 
-<font color="red"> ОЦЕНЕНО: **2 баллов**</font> а методы и поля паблик повызывать? Ну за protected плюс однозначно, хотя он тут себя сомнительно оправдывает
+	// TODO: указать модификатор доступа
+	private String passwordHash;
+
+- это не private
+```
+
+<font color="red"> ОЦЕНЕНО: **1 баллов**</font> а методы и поля паблик повызывать? Ну за protected плюс однозначно, хотя он тут себя сомнительно оправдывает
 
 **Output:**
 

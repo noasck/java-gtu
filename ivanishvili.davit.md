@@ -1,13 +1,26 @@
-<code style="color : red">
-в общем - 26/30
-</code>
+```diff
+- в общем и целом - 27/30
+⠀⠀⠀⠀⠀⠀⢀⣤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⢤⣤⣀⣀⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢀⡼⠋⠀⣀⠄⡂⠍⣀⣒⣒⠂⠀⠬⠤⠤⠬⠍⠉⠝⠲⣄⡀⠀⠀
+⠀⠀⠀⢀⡾⠁⠀⠊⢔⠕⠈⣀⣀⡀⠈⠆⠀⠀⠀⡍⠁⠀⠁⢂⠀⠈⣷⠀⠀
+⠀⠀⣠⣾⠥⠀⠀⣠⢠⣞⣿⣿⣿⣉⠳⣄⠀⠀⣀⣤⣶⣶⣶⡄⠀⠀⣘⢦⡀
+⢀⡞⡍⣠⠞⢋⡛⠶⠤⣤⠴⠚⠀⠈⠙⠁⠀⠀⢹⡏⠁⠀⣀⣠⠤⢤⡕⠱⣷
+⠘⡇⠇⣯⠤⢾⡙⠲⢤⣀⡀⠤⠀⢲⡖⣂⣀⠀⠀⢙⣶⣄⠈⠉⣸⡄⠠⣠⡿
+⠀⠹⣜⡪⠀⠈⢷⣦⣬⣏⠉⠛⠲⣮⣧⣁⣀⣀⠶⠞⢁⣀⣨⢶⢿⣧⠉⡼⠁
+⠀⠀⠈⢷⡀⠀⠀⠳⣌⡟⠻⠷⣶⣧⣀⣀⣹⣉⣉⣿⣉⣉⣇⣼⣾⣿⠀⡇⠀
+⠀⠀⠀⠈⢳⡄⠀⠀⠘⠳⣄⡀⡼⠈⠉⠛⡿⠿⠿⡿⠿⣿⢿⣿⣿⡇⠀⡇⠀
+⠀⠀⠀⠀⠀⠙⢦⣕⠠⣒⠌⡙⠓⠶⠤⣤⣧⣀⣸⣇⣴⣧⠾⠾⠋⠀⠀⡇⠀
+⠀⠀⠀⠀⠀⠀⠀⠈⠙⠶⣭⣒⠩⠖⢠⣤⠄⠀⠀⠀⠀⠀⠠⠔⠁⡰⠀⣧⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠲⢤⣀⣀⠉⠉⠀⠀⠀⠀⠀⠁⠀⣠⠏⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠛⠒⠲⠶⠤⠴⠒⠚⠁⠀⠀
+```
 
 
 # Java Mid-Term Exam
 
-**Student:** გრიგორიანი მიხეილ
+**Student:** ივანიშვილი დავით
 
-**Student ID:** 1401884
+**Student ID:** 1837797
 
 **Cheating detected:** No
 
@@ -18,37 +31,36 @@
 Дать определение JVM, JRE, JDK. Расшифровка каждой аббревиатуры, назначение и взаимосвязь.
 
 ```
-JRE - Java runtime environment. Джава среда, необходимая для запуска джава файлов, имеет в себе стандартный набор джава библиотек (джава классы) и JVM
-JDK - Java development kit. Набор инструментов и библиотек, необходимых для разработки и компиляции джава кода (например, javac). Имеет в себе JRE и JVM
-JVM - Java virtual machine. Виртуальная машина, которая запускает байт код.
+JRE -Java Runtime Envimoment среда для запуска джава програм .В нее входит JVM и стандарт библиотека она нужна для запуска програм
+JDK - Java Devolpent  Kit набор для разработки в него входит JRE , JVM и компилятор
+JVM -Java Vertiual Machine виртуальная машина кототрая запускает java код . Она читает байт код и самам переводит его команды нужной операционой системы
+```
+```diff
+- не в "нужной ОС" а в нужную архитектуру "х86/ARM"
+- почитайте что это и разница между ОС и архитектурами и почему это боль
 ```
 
-<code style="color : red">
-2
-</code>
 ### Subtask 2
 
 Проблема платформозависимости: почему нужно компилировать код по-разному для каждой операционной системы и какие неудобства с этим связаны?
 
 ```
-Код нужно компилировать по-разному для каждой операционной системы, потому что ОС отличаются архитектурой друг от друга. Неудобств, связанных с этим много, код для каждой системы нужно писать заново или переделывать старый, а так как операционок может быть неограниченное количество и не ясно, какой конкретно будет пользоваться юзер, это может вылиться в огромные проблемы для разработчика.
+Каждая ОС ипользует свой машиный  код поэтому обычные программы нужно компилировать отдельно под каждую ОС.Один бинарник не работает везде
 ```
 
-<code style="color : red">
-1, нет про архитектуры разные, и необязательно код надо переделывать, там и без этого проблем хватает.
-</code>
+```diff
+- не только ОС. ещё и архитектура ЦП
+```
+
 ### Subtask 3
 
 Мотивация создания JVM и диаграмма процесса компиляции и исполнения: машинный код, исходный код, байт-код.
 
 ```
-Создание JVM было мотивировано проблемой платформозависимости, оно было обосновано принципом write once-run everywhere. JVM платформазависима, но компилирует байт код вне зависимости от системы.
-Процесс компиляции и исполнения следующий: исходный код, написанный разработчиком, компилируется (JIT компиляцией) в байт-код, после чего компилируется в машинный код JVM в зависимости от системы.
+чтобы программы джав могли работать одинаково на любых  устройствах и ОС без пересборки под каждую платформу.Так же jvm обеспечивает безопасность,упровление памятью и сборку мусора
 ```
 
-<code style="color : red">
-1.5/2. wora плюс, но где вы JIT там в байт-коде взяли? ай ай ай, ну хоть бы не писали совсем. Почитайте что такое JIT.
-</code>
+
 ### Subtask 4
 
 Дано описание предмета из реального мира.<br>
@@ -92,53 +104,44 @@ JVM - Java virtual machine. Виртуальная машина, которая 
 
 ```java
 class Printer3D {
-	private String model;
-	private int filamentLevel;
-	private int powerLevel;
-	public static int objectsPrinted;
+	String model;
+	int filamentLevel;
+	int powerLevel;
+	int objectsPrinted;
 
-	public Printer3D(String model, int filamentLevel, int powerLevel){
-		this.model = model;
-		if(filamentLevel > 0){
-			this.filamentLevel = filamentLevel;
-		}else{
-			this.filamentLevel = 0;
+	public Printer3D(String model,int filamentLevel,int powerLevel)
+	{this.model = model;
+	this.powerLevel=powerLevel;
+	this.filamentLevel=filamentLevel;
+	this.objectsPrinted=0;}
+
+	void printObject(int fialmnetNeeded, int powerNeede){
+		if(filamentLevel>=fialmnetNeeded && powerLevel >= powerNeede ){
+             filamentLevel -= fialmnetNeeded;
+             powerLevel -= powerNeede;
+            objectsPrinted ++;
+            System.out.println("Печать успешна");
+            }
+            else
+            {System.out.println("Ошибка недостаточно ресурсов");}
+
 		}
-		if(powerLevel > 0){
-			this.powerLevel = powerLevel;
-		}else{
-			this.powerLevel = 0;
-		}
-	}
-	public void refillFilament(int amount){
-		if(amount <= 0){
-			System.out.println("Filament level must be positive.");
-			return;
-		}
-		this.filamentLevel += amount;
-	}
-	public void recharge(int amount){
-		if(amount <= 0){
-			System.out.println("Power level must be positive");
-			return;
-		}
-		this.powerLevel += amount;
-	}
-	public void printObject(int filamentNeeded, int powerNeeded){
-		if(filamentNeeded > this.filamentLevel || powerNeeded > this.powerLevel){
-			System.out.println("Not enough resources");
-			return;
-		}
-		this.filamentLevel -= filamentNeeded;
-		this.powerLevel -= powerNeeded;
-		objectsPrinted++;
-		System.out.println("Object successfully printed");
-	}
-	public void printStatus(){
-		System.out.println("Filament level: " + this.filamentLevel);
-		System.out.println("Power level: " + this.powerLevel);
-		System.out.println("Number of printed objects:" + objectsPrinted);
-	}
+		void refillFilament (int amount){
+		powerLevel +=amount;	}
+
+		void recharge ( int amount )
+		{
+			powerLevel += amount;
+			if (powerLevel >100)powerLevel=100;
+			}
+
+		void printStatus(){
+			System.out.println("Модель "+model);
+             System.out.println("Филамент "+filamentLevel);
+			System.out.println("Заряд "+powerLevel);
+			System.out.println("Напичатоно "+objectsPrinted);
+			System.out.println();}
+
 }
 
 public class Main {
@@ -163,21 +166,22 @@ public class Main {
 **Output:**
 
 ```
-Filament level: 500
-Power level: 80
-Number of printed objects:0
-Object successfully printed
-Object successfully printed
+������ Creality Ender 3
+�������� 500
+����� 80
+���������� 0
 
-Filament level: 350
-Power level: 50
-Number of printed objects:2
+������ �������
+������ �������
+
+������ Creality Ender 3
+�������� 250
+����� 100
+���������� 2
+
 
 ```
 
-<code style="color : red">
-смогли. 4
-</code>
 
 ## Task 7
 
@@ -186,39 +190,34 @@ Number of printed objects:2
 Статические поля - определение и их свойства. Статические методы - определение и их свойства.
 
 ```
-Статическое поле - это поле, общее для всех экземпляров класса. Обращаться к нему следует напрямую через название класса.
-Статический метод - это метод, который не требует экземпляра класса для вызова. Пример статического метода: Math.pow(), Math.sqrt()
+Статическое поле - это переменая которая хронится не методе, а в клссе.
+Статический метод - это метод который можно вызывать беза создания объекта.
 ```
 
-<code style="color : red">
-как-то очень кратко и общО. 1/2
-</code>
+```diff
+- как-то не густо.  1/2.
+```
+
 ### Subtask 2
 
 Зачем нужны статические члены класса? Приведите пример, где это может понадобиться.
 
 ```
-Статические члены класса нужны, когда не нужно создание экземпляра класса для вызова. Например, классу Math не нужно создание экземпляра Math для вызова его методов, поэтому почти все они статичны, так же как и поля констант, к примеру Math.PI.
+статически члены нужны для данных и объектов которые общие для всех объектов и не привязано к конкретному экземпляру.Они существуют один раз на весь класс и позволяет работать без создания объекта.
 ```
-<code style="color : red">
-Где-то рядом, но это далеко не единственное.
-1/2
-</code>
+
+```diff
+- и не только для этого. но ладно
+```
 
 ### Subtask 3
 
 Статические импорты - что это и зачем нужно
 
 ```
-Статические импорты это импорты, облегчающие написание кода. Нужно чтобы не вызывать методы импортированного класса через название класса, а напрямую:
-import static Math.*;
-Вместо Math.sqrt(num) теперь sqrt(num).
+позволяет использовать статические поля и методы другого класса без указании имени этого класса
 ```
 
-<code style="color : red">
-Где-то рядом, но это далеко не единственное.
-1/2
-</code>
 ### Subtask 4
 
 Дано описание вспомогательного класса из реального мира — помощник логов.<br>
@@ -261,35 +260,30 @@ import static Math.*;
 
 ```java
 class LogHelper {
-	private static int logLevel;
-	private static String prefix;
-	private static int logsCount;
+ static int logLevel= 1;
+ static String prefix = "";
+ static int logCount=0;
 
-	public static void configure(int level, String pref){
-		logLevel = level;
-		prefix = pref;
-	}
-	public static void log(int level, String message){
-		if(level <= logLevel){
-			System.out.println("[LEVEL " + level + "] [" + prefix + "] " + message);
-			logsCount++;
-		}
-	}
-	public static void setPrefix(String pref){
-		prefix = pref;
-	}
-	public static void setLevel(int level){
-		logLevel = level;
-	}
-	public static void printStatus(){
-		System.out.println("Log level: " + logLevel);
-		if(prefix == null){
-			System.out.println("Prefix not set");
-		}else{
-			System.out.println("Prefix: " + prefix);
-		}
-		System.out.println("Logs count: " + logsCount);
-	}
+static void configure (int level, String pref){
+	logLevel=level;
+	prefix = pref; }
+
+ static void log (int level ,String messege ){
+ 	if(level <= logLevel){System.out.println("["+level+prefix+"]"+messege);
+logCount ++;
+ }
+ 	}
+ 	static void setPrefix(String pref){
+ 		prefix = pref ;}
+
+ 		static void setLevel(int level){
+ 			logLevel=level;}
+
+ 		static void printStatus(){
+ System.out.println("Уровень логирования "+logLevel);
+ System.out.println("Префикс"+prefix);
+ System.out.println("Выведино сообщеный "+logCount);
+ 			}
 }
 
 public class Main {
@@ -315,21 +309,18 @@ public class Main {
 **Output:**
 
 ```
-Log level: 2
-Prefix: APP
-Logs count: 0
-[LEVEL 1] [APP] ����������� ������
+������� ����������� 2
+�������APP
+�������� ��������� 0
+[1APP]����������� ������
 
-Log level: 3
-Prefix: CORE
-Logs count: 1
-[LEVEL 2] [CORE] warning
+������� ����������� 3
+�������CORE
+�������� ��������� 1
+[2CORE]warning
 
 ```
 
-<code style="color : red">
-Хороший код. запускается, супер. 4.
-</code>
 
 ## Task 11
 
