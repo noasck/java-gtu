@@ -1,48 +1,21 @@
 ```diff
-- в общем, 20/30.
+- 20/30 за экзамен
 
-
-                              ....
-                           ,;;'''';;,                    ,;;;;,
-                 ,        ;;'      `;;,               .,;;;'   ;
-              ,;;;       ;;          `;;,';;;,.     ,%;;'     '
-            ,;;,;;       ;;         ,;`;;;, `;::.  %%;'
-           ;;;,;;;       `'       ,;;; ;;,;;, `::,%%;'
-           ;;;,;;;,          .,%%%%%'% ;;;;,;;   %;;;
- ,%,.      `;;;,;;;,    .,%%%%%%%%%'%; ;;;;;,;;  %;;;
-;,`%%%%%%%%%%`;;,;;'%%%%%%%%%%%%%'%%'  `;;;;;,;, %;;;
-;;;,`%%%%%%%%%%%,; ..`%%%%%%%%;'%%%'    `;;;;,;; %%;;
- `;;;;;,`%%%%%,;;/, .. `"""'',%%%%%      `;;;;;; %%;;,
-    `;;;;;;;,;;/////,.    ,;%%%%%%%        `;;;;,`%%;;
-           ;;;/%%%%,%///;;;';%%%%%%,          `;;;%%;;,
-          ;;;/%%%,%%%%%/;;;';;'%%%%%,             `%%;;
-         .;;/%%,%%%%%//;;'  ;;;'%%%%%,             %%;;,
-         ;;//%,%%%%//;;;'   `;;;;'%%%%             `%;;;
-         ;;//%,%//;;;;'      `;;;;'%%%              %;;;,
-         `;;//,/;;;'          `;;;'%%'              `%;;;
-           `;;;;'               `;'%'                `;;;;
-                                  '      .,,,.        `;;;;
-                                      ,;;;;;;;;;;,     `;;;;
-                                     ;;;'    ;;;,;;,    `;;;;
-                                     ;;;      ;;;;,;;.   `;;;;
-                                      `;;      ;;;;;,;;   ;;;;
-                                        `'      `;;;;,;;  ;;;;
-                                                   `;;,;, ;;;;
-                                                      ;;, ;;;;
-                                                        ';;;;;
-                                                         ;;;;;
-                                                        .;;;;'
-                                                       .;;;;'
-                                                      ;;;;;'
-                                                     ,;;;;'
+         wWWWw               wWWWw
+   vVVVv (___) wWWWw         (___)  vVVVv
+   (___)  ~Y~  (___)  vVVVv   ~Y~   (___)
+    ~Y~   \|    ~Y~   (___)    |/    ~Y~
+    \|   \ |/   \| /  \~Y~/   \|    \ |/
+   \\|// \\|// \\|/// \\|//  \\|// \\\|///
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ```
 
 # Java Mid-Term Exam
 
-**Student:** არღვლიანი დიანა
+**Student:** არუთინოვა ელინა
 
-**Student ID:** 1525958
+**Student ID:** 1195903
 
 **Cheating detected:** Yes
 
@@ -53,17 +26,15 @@
 Что такое интерфейс в Java? Могут ли в интерфейсе быть методы с реализацией? Зачем нужны интерфейсы, не достаточно ли абстрактных и обычных классов?
 
 ```
-Интерфейс в Java - это набор правил описывающих что должен делать обьект ,но не поясняя как обьект совершает это действие.В интерфейсе могут быть методы с реализацией( abstract, default,static, private).Интерфейсы нужны для выполнения выполнения тех задач которые не дают простые методы( множественное наследование ,задаать единый контракт для разных классов,ослобляют зависимость между частями программы).
+интерфейс в Java - это контракт с набором методов без , реализации , в классе их может быть несколько.да в интерфейсе могут быть методы с реализацией такие ка defalt и ststic. они нужны для множественного наследования поведения , гибкой архитектуры, и ослобления связности
 ```
-```diff
-- привет чатгпт
-```
+
 ### Subtask 2
 
 Как наследуются методы интерфейса? Как наследовать интерфейс (ключевое слово) и возможно ли наследование нескольких интерфейсов одним классом?
 
 ```
-Методы интерфейса реализуются в классе, который этот интерфейс implements.Класс обязан переписать все методы интерфейса.Тнтерфейс наследуется ключевым словом extends но только от других интерфейсов.В java ращрешено множественное наследование интерфейсов. Также класс может наследовать сразу несклько интерфейсов.
+все методы интерфейса реализуется в классе , который его реализует, с помощью ключевого слова implements, и один класс может реализовать несколько интерфейсов одновременно
 ```
 
 
@@ -74,7 +45,7 @@
 Что такое final классы и какая их связь с наследованием?
 
 ```
-Final классы - это классы от которых нельза наследовать.Связь с наследование заключается в том что  Final напрямую запрещает наследование
+это клаcс от которого нельзя наследоваться,его нельзя расштрить
 ```
 
 ### Subtask 2
@@ -82,7 +53,7 @@ Final классы - это классы от которых нельза нас
 Разрешено ли множественное наследование в Java и почему?
 
 ```
-Множественое наследование запрещенно.Это сделано для предотвращения конфликтов и неоднозначности,когда один класс мог бы наследовать методы от нескольких родителей.
+нет не разрешено потому что приводит к неоднозначности , непонятно какой метод или реализацию брать из нескольких родительских метадов
 ```
 
 ### Subtask 3
@@ -90,7 +61,7 @@ Final классы - это классы от которых нельза нас
 Для чего используется ключевое слово super? Как наследуются конструкторы родительских классов в дочерних?
 
 ```
-SUPER в  JAVA используется для обращения к родительскому классу.С его помощью можнол выхвать методы и поля родителя, а так же конструктор базового класса.
+это слово используется для обращения к родительскому классу , чтобы вызвать его конструктор , получить длступ к его полям , методам.конструкторродительского классатвызывается из конструктора дочернего какраз с помощью этого ключевого слово super
 ```
 
 ### Subtask 4
@@ -115,24 +86,23 @@ SUPER в  JAVA используется для обращения к родит�
 ```java
 class User {
 
-	// TODO: указать модификатор доступа
+
 	String username;
 
-	// TODO: указать модификатор доступа
+
 	String passwordHash;
 
-	// TODO: указать модификатор доступа
+
 	User(String username, String passwordHash) {
 		this.username = username;
 		this.passwordHash = passwordHash;
 	}
 
-	// TODO: указать модификатор доступа
 	boolean checkPassword(String hash) {
 		return passwordHash.equals(hash);
 	}
 
-	// TODO: указать модификатор доступа
+
 	String getUsername() {
 		return username;
 	}
@@ -140,21 +110,20 @@ class User {
 
 class AdminUser extends User {
 
-	// TODO: указать модификатор доступа
+
 	int accessLevel;
 
-	// TODO: указать модификатор доступа
+
 	AdminUser(String username, String passwordHash, int accessLevel) {
 		super(username, passwordHash);
 		this.accessLevel = accessLevel;
 	}
 
-	// TODO: указать модификатор доступа
+
 	boolean hasAccess(int requiredLevel) {
 		return accessLevel >= requiredLevel;
 	}
 
-	// TODO: указать модификатор доступа
 	int getAccessLevel() {
 		return accessLevel;
 	}
@@ -165,7 +134,7 @@ public class Main {
 
 		AdminUser admin = new AdminUser("root", "abc123hash", 10);
 
-		// вызвать все методы и поля,
+		// вызвать все методы и поля,контрак
 		// которые вы считаете публичными и вывести в stdout;
 	}
 }
@@ -177,9 +146,12 @@ public class Main {
 ```
 
 ```
+
 ```diff
-- не попытались. А жаль
+- не попытались. ну ладно. Ну и у Вас есть некоторые неточности в теорке.
++ 0/4
 ```
+
 
 ## Task 5
 
@@ -188,7 +160,7 @@ public class Main {
 Дать определение “поле класса”
 
 ```
-Поле класса - это переменная, которая обьявлена внутри класса и хранит данные.
+Поле класса хранит состояние обьекта
 ```
 
 ### Subtask 2
@@ -196,7 +168,7 @@ public class Main {
 Дать определение “метод класса”
 
 ```
-Метод класса - это функция, которая принадлежит какому-то классу и может быть вызвана для выполнения определенной операции
+Метод класса описывает его поведение
 ```
 
 ### Subtask 3
@@ -204,7 +176,7 @@ public class Main {
 Дать определение "Сигнатура метода" и её составляющие
 
 ```
-Сигнатура метода класса в Java - это уникальное описание метода ,состоящее из его имеи и списка параметров.
+Сигнатура метода класса в Java состоит из имени и пораметров
 ```
 
 ### Subtask 4
@@ -251,8 +223,18 @@ public class Main {
 
 ```java
 class CoffeeMachine {
- private String model;
- private String
+	private string brand;
+	private int waterlevel;
+	private int beansLevel;
+	private int cupMade;
+
+	public CoffeeMachine (string brand,int waterLevel, int beansLevel){
+		this.brand=brand;
+		this.waterLevel = waterLevel;
+		this.beansLevel = beansLevel;
+		this.cupMade=0;
+	}
+
 }
 
 public class Main {
@@ -266,7 +248,6 @@ public class Main {
 		System.out.println();
 
 		machine.refillWater(300);
-
 		machine.refillBeans(40);
 
 		machine.printStatus();
@@ -279,9 +260,54 @@ public class Main {
 
 ```
 Compilation error:
-C:\Users\User\Desktop\.\Main.java:3: error: <identifier> expected
- private String
-               ^
-1 error
+C:\Users\Windows\Downloads\exam (2)\.\Main.java:2: error: cannot find symbol
+	private string brand;
+	        ^
+  symbol:   class string
+  location: class CoffeeMachine
+C:\Users\Windows\Downloads\exam (2)\.\Main.java:7: error: cannot find symbol
+	public CoffeeMachine (string brand,int waterLevel, int beansLevel){
+	                      ^
+  symbol:   class string
+  location: class CoffeeMachine
+C:\Users\Windows\Downloads\exam (2)\.\Main.java:9: error: cannot find symbol
+		this.waterLevel = waterLevel;
+		    ^
+  symbol: variable waterLevel
+C:\Users\Windows\Downloads\exam (2)\.\Main.java:20: error: cannot find symbol
+		machine.printStatus();
+		       ^
+  symbol:   method printStatus()
+  location: variable machine of type CoffeeMachine
+C:\Users\Windows\Downloads\exam (2)\.\Main.java:21: error: cannot find symbol
+		machine.makeCoffee(150, 15);
+		       ^
+  symbol:   method makeCoffee(int,int)
+  location: variable machine of type CoffeeMachine
+C:\Users\Windows\Downloads\exam (2)\.\Main.java:22: error: cannot find symbol
+		machine.makeCoffee(500, 50);
+		       ^
+  symbol:   method makeCoffee(int,int)
+  location: variable machine of type CoffeeMachine
+C:\Users\Windows\Downloads\exam (2)\.\Main.java:26: error: cannot find symbol
+		machine.refillWater(300);
+		       ^
+  symbol:   method refillWater(int)
+  location: variable machine of type CoffeeMachine
+C:\Users\Windows\Downloads\exam (2)\.\Main.java:27: error: cannot find symbol
+		machine.refillBeans(40);
+		       ^
+  symbol:   method refillBeans(int)
+  location: variable machine of type CoffeeMachine
+C:\Users\Windows\Downloads\exam (2)\.\Main.java:29: error: cannot find symbol
+		machine.printStatus();
+		       ^
+  symbol:   method printStatus()
+  location: variable machine of type CoffeeMachine
+9 errors
 
+```
+
+```diff
+- попытались. 1/4.
 ```

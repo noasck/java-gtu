@@ -1,4 +1,3 @@
-<code style="color : red"> Ну в общем, 29/30 </code>
 ``` diff
 - Ну в общем, 28/30
 ```
