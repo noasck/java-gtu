@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101828">
+  <title>Cluster Shift — Distributed Systems Game</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --paper: #fff8df;
+      --panel: #fffdf1;
+      --line: #172033;
+      --purple: #7055d9;
+      --blue: #2488e8;
+      --cyan: #39c5bb;
+      --green: #60c66a;
+      --yellow: #ffd552;
+      --orange: #f28b4b;
+      --red: #e94d5f;
+      --muted: #697086;
+      --shadow: 5px 5px 0 #172033;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; background: #cdd7e5; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.14) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,.14) 1px, transparent 1px),
+        #dfe8ef;
+      background-size: 16px 16px;
+      font-family: "Courier New", ui-monospace, monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .topbar {
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(280px, 2fr) minmax(220px, 1fr);
+      align-items: center;
+      gap: 20px;
+      padding: 12px 22px;
+      color: white;
+      border-bottom: 5px solid var(--line);
+      background: #172033;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 38px; height: 38px; position: relative; flex: 0 0 auto;
+      background: var(--cyan); border: 3px solid white; box-shadow: 4px 4px 0 var(--purple);
+    }
+    .brand-mark::before, .brand-mark::after { content: ""; position: absolute; background: var(--ink); }
+    .brand-mark::before { width: 6px; height: 6px; left: 6px; top: 8px; box-shadow: 16px 0 var(--ink); }
+    .brand-mark::after { width: 20px; height: 5px; left: 6px; bottom: 7px; }
+    .brand h1 { margin: 0; font-size: clamp(17px, 2vw, 24px); letter-spacing: 1px; }
+    .brand small { display: block; color: #aeb9d2; font-size: 10px; margin-top: 2px; }
+
+    .level-track { display: flex; align-items: center; justify-content: center; gap: 7px; }
+    .level-dot {
+      width: 28px; height: 24px; display: grid; place-items: center;
+      border: 2px solid #75809a; color: #aeb9d2; background: #242e44; font-size: 11px;
+    }
+    .level-dot.active { border-color: var(--yellow); color: var(--ink); background: var(--yellow); transform: translateY(-2px); }
+    .level-dot.done { border-color: var(--green); color: var(--ink); background: var(--green); }
+
+    .top-stats { display: flex; justify-content: flex-end; gap: 10px; }
+    .top-chip { padding: 6px 9px; border: 2px solid #69758f; background: #242e44; font-size: 12px; white-space: nowrap; }
+    .top-chip b { color: var(--yellow); }
+
+    .shell { max-width: 1600px; margin: 0 auto; padding: 18px; }
+    .game-grid { display: grid; grid-template-columns: 265px minmax(480px, 1fr) 295px; gap: 14px; align-items: start; }
+
+    .panel {
+      background: var(--panel);
+      border: 3px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .panel-title {
+      margin: 0; padding: 9px 11px; border-bottom: 3px solid var(--line);
+      background: var(--yellow); font-size: 13px; letter-spacing: .6px; text-transform: uppercase;
+    }
+    .panel-body { padding: 12px; }
+
+    .mission-tag { display: inline-block; padding: 4px 7px; color: white; background: var(--purple); font-size: 10px; margin-bottom: 8px; }
+    #missionName { margin: 0 0 6px; font-size: 21px; line-height: 1.05; }
+    #missionText { margin: 0 0 12px; color: #4b5264; font: 13px/1.45 system-ui, sans-serif; }
+    .brief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+    .brief-stat { padding: 7px; border: 2px solid #c8c2ac; background: #fff; }
+    .brief-stat span { display: block; color: var(--muted); font-size: 9px; text-transform: uppercase; }
+    .brief-stat b { font-size: 14px; }
+
+    .sla-title { font-size: 11px; text-transform: uppercase; margin: 10px 0 6px; }
+    .sla-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+    .sla-list li { padding-left: 17px; position: relative; font: 12px/1.25 system-ui, sans-serif; }
+    .sla-list li::before { content: "◆"; position: absolute; left: 0; top: 0; color: var(--purple); font-family: monospace; }
+    .hint-box { margin-top: 12px; padding: 9px; border: 2px dashed var(--orange); background: #fff1d7; font-size: 11px; line-height: 1.35; }
+    .hint-box b { color: #a3451c; }
+
+    .sim-panel { overflow: hidden; }
+    .sim-head { padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--line); background: #29344a; color: white; }
+    .status-lamp { display: flex; align-items: center; gap: 7px; font-size: 11px; text-transform: uppercase; }
+    .lamp { width: 10px; height: 10px; background: var(--muted); border: 2px solid white; }
+    .lamp.live { background: var(--green); animation: blink .8s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: .35; } }
+    .speed-btn { border: 2px solid white; background: transparent; color: white; padding: 3px 8px; cursor: pointer; font-size: 11px; }
+    .speed-btn:hover, .speed-btn:focus-visible { background: white; color: var(--ink); }
+
+    .canvas-wrap { position: relative; background: #111a2a; aspect-ratio: 2.08 / 1; min-height: 310px; }
+    canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+    .event-banner {
+      display: none; position: absolute; left: 50%; top: 16px; transform: translateX(-50%);
+      padding: 7px 12px; color: white; border: 3px solid white; box-shadow: 4px 4px 0 #000;
+      background: var(--red); font-weight: bold; font-size: 12px; text-transform: uppercase; z-index: 3;
+    }
+    .event-banner.show { display: block; animation: slam .25s steps(3); }
+    @keyframes slam { from { transform: translate(-50%, -18px) scale(1.3); } }
+
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 3px solid var(--line); }
+    .metric { background: #fff; padding: 8px; border-right: 2px solid var(--line); min-width: 0; }
+    .metric:last-child { border-right: 0; }
+    .metric label { display: flex; justify-content: space-between; font-size: 9px; text-transform: uppercase; gap: 4px; }
+    .meter { height: 9px; border: 2px solid var(--line); margin-top: 5px; background: #d9d9d2; }
+    .meter i { display: block; height: 100%; width: 0; background: var(--green); transition: width .25s steps(8); }
+    .meter.warn i { background: var(--orange); }
+    .meter.bad i { background: var(--red); }
+
+    .ticker { height: 31px; border-top: 3px solid var(--line); background: #172033; color: #aef2c1; padding: 7px 10px; overflow: hidden; white-space: nowrap; font-size: 11px; }
+    .ticker::before { content: "> "; color: var(--yellow); }
+
+    .control-group { margin-bottom: 13px; }
+    .control-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; font-size: 11px; text-transform: uppercase; }
+    .control-label small { color: var(--muted); text-transform: none; }
+    .choice-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+    .choice-row.arch { grid-template-columns: 1fr 1fr; }
+    .choice {
+      min-height: 36px; border: 2px solid var(--line); background: white; padding: 5px 3px;
+      cursor: pointer; font-size: 10px; line-height: 1.05; text-align: center;
+    }
+    .choice:hover, .choice:focus-visible { background: #e5efff; outline: 2px solid var(--blue); outline-offset: 1px; }
+    .choice.selected { background: var(--purple); color: white; box-shadow: 2px 2px 0 var(--line); transform: translate(-1px,-1px); }
+    .choice em { display: block; font-style: normal; font-size: 8px; opacity: .75; margin-top: 3px; }
+
+    .stepper { display: grid; grid-template-columns: 36px 1fr 36px; align-items: stretch; }
+    .stepper button { border: 2px solid var(--line); background: var(--yellow); cursor: pointer; font-size: 18px; }
+    .stepper button:hover, .stepper button:focus-visible { background: var(--orange); }
+    .stepper-output { display: grid; place-items: center; border-block: 2px solid var(--line); background: white; min-height: 36px; font-weight: bold; }
+
+    .forecast { border: 2px solid var(--line); background: #eef5ff; padding: 8px; margin-top: 8px; }
+    .forecast-row { display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; border-bottom: 1px dashed #aab5c7; }
+    .forecast-row:last-child { border: 0; }
+    .forecast-row b.over { color: var(--red); }
+
+    .actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 13px; }
+    .primary, .secondary, .icon-btn {
+      border: 3px solid var(--line); cursor: pointer; box-shadow: 3px 3px 0 var(--line); font-weight: bold;
+    }
+    .primary { background: var(--green); padding: 10px 8px; text-transform: uppercase; }
+    .secondary { background: white; padding: 10px; }
+    .primary:hover, .primary:focus-visible { background: #8ee08e; transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--line); }
+    .primary:disabled { filter: grayscale(1); cursor: not-allowed; opacity: .7; }
+    .icon-btn { background: var(--yellow); padding: 5px 8px; }
+
+    .legend { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; color: #555e72; font-size: 10px; }
+    .legend i { width: 10px; height: 10px; display: inline-block; border: 1px solid var(--line); vertical-align: -1px; margin-right: 4px; }
+
+    .modal {
+      position: fixed; inset: 0; display: grid; place-items: center; z-index: 20; padding: 18px;
+      background: rgba(16,24,40,.83); backdrop-filter: blur(2px);
+    }
+    .modal[hidden] { display: none; }
+    .modal-card { width: min(680px, 100%); max-height: 92vh; overflow-y: auto; background: var(--paper); border: 4px solid white; box-shadow: 10px 10px 0 #05080e; }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--purple); color: white; border-bottom: 4px solid var(--line); }
+    .modal-head h2 { margin: 0; font-size: 20px; }
+    .modal-content { padding: 18px; }
+    .modal-content p { font: 14px/1.5 system-ui, sans-serif; }
+    .tutorial-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 16px 0; }
+    .tutorial-item { border: 2px solid var(--line); background: white; padding: 10px; text-align: center; font: 12px/1.3 system-ui, sans-serif; }
+    .tutorial-item b { display: block; color: var(--purple); font-family: monospace; margin-bottom: 5px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+
+    .result-score { display: grid; grid-template-columns: 120px 1fr; gap: 16px; align-items: center; }
+    .grade-box { aspect-ratio: 1; display: grid; place-items: center; border: 4px solid var(--line); background: var(--yellow); font-size: 52px; font-weight: bold; box-shadow: 5px 5px 0 var(--line); }
+    .stars { color: #d58b00; font-size: 28px; letter-spacing: 3px; }
+    .result-checks { display: grid; gap: 7px; margin: 15px 0; }
+    .result-check { display: grid; grid-template-columns: 25px 1fr auto; gap: 8px; align-items: center; padding: 7px; background: white; border: 2px solid #c8c2ac; font: 12px/1.3 system-ui, sans-serif; }
+    .result-check .ok { color: #168437; font-weight: bold; }
+    .result-check .no { color: var(--red); font-weight: bold; }
+    .lesson { border-left: 5px solid var(--blue); background: #e8f3ff; padding: 10px; font: 12px/1.4 system-ui, sans-serif; }
+    .kbd { padding: 1px 5px; border: 1px solid var(--line); background: white; box-shadow: 1px 1px 0 var(--line); font-family: monospace; }
+
+    .confetti { position: fixed; width: 8px; height: 8px; z-index: 30; pointer-events: none; animation: fall 1.8s linear forwards; }
+    @keyframes fall { to { transform: translate(var(--dx), 105vh) rotate(540deg); opacity: .7; } }
+
+    @media (max-width: 1120px) {
+      .game-grid { grid-template-columns: 250px 1fr; }
+      .controls-panel { grid-column: 1 / -1; }
+      .controls-panel .panel-body { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+      .controls-panel .control-group { margin: 0; }
+      .forecast, .actions { grid-column: span 2; margin-top: 0; }
+    }
+    @media (max-width: 760px) {
+      .topbar { grid-template-columns: 1fr auto; gap: 10px; padding: 9px 12px; }
+      .level-track { grid-column: 1 / -1; grid-row: 2; }
+      .brand small, .top-chip:first-child { display: none; }
+      .shell { padding: 10px; }
+      .game-grid { grid-template-columns: 1fr; }
+      .brief-panel, .sim-panel, .controls-panel { grid-column: 1; }
+      .sim-panel { grid-row: 1; }
+      .brief-panel { grid-row: 2; }
+      .canvas-wrap { min-height: 220px; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .metric:nth-child(2) { border-right: 0; }
+      .metric:nth-child(-n+2) { border-bottom: 2px solid var(--line); }
+      .controls-panel .panel-body { grid-template-columns: 1fr 1fr; }
+      .tutorial-strip { grid-template-columns: 1fr; }
+      .result-score { grid-template-columns: 85px 1fr; }
+      .grade-box { font-size: 38px; }
+    }
+    @media (max-width: 470px) {
+      .top-stats { display: none; }
+      .topbar { grid-template-columns: 1fr; }
+      .level-dot { width: 23px; }
+      .controls-panel .panel-body { grid-template-columns: 1fr; }
+      .forecast, .actions { grid-column: 1; }
+      .choice-row.arch { grid-template-columns: 1fr 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div><h1>CLUSTER SHIFT</h1><small>distributed systems control room</small></div>
+    </div>
+    <nav class="level-track" id="levelTrack" aria-label="Level progress"></nav>
+    <div class="top-stats">
+      <div class="top-chip">SCORE <b id="totalScore">0000</b></div>
+      <div class="top-chip">STARS <b id="totalStars">0</b>/21</div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="game-grid">
+      <section class="panel brief-panel" aria-labelledby="briefTitle">
+        <h2 class="panel-title" id="briefTitle">Incoming ticket</h2>
+        <div class="panel-body">
+          <span class="mission-tag" id="missionTag">LEVEL 1 · WARM-UP</span>
+          <h3 id="missionName">Loading…</h3>
+          <p id="missionText"></p>
+          <div class="brief-grid">
+            <div class="brief-stat"><span>Peak load</span><b id="loadStat">—</b></div>
+            <div class="brief-stat"><span>Node capacity</span><b id="capacityStat">—</b></div>
+            <div class="brief-stat"><span>Read / write</span><b id="ratioStat">—</b></div>
+            <div class="brief-stat"><span>Budget</span><b id="budgetStat">—</b></div>
+          </div>
+          <h4 class="sla-title">Service-level objectives</h4>
+          <ul class="sla-list" id="slaList"></ul>
+          <div class="hint-box" id="architectNote"><b>Architect note:</b> Read the workload, not the product label.</div>
+        </div>
+      </section>
+
+      <section class="panel sim-panel" aria-label="Live system simulation">
+        <div class="sim-head">
+          <div class="status-lamp"><span class="lamp" id="statusLamp"></span><span id="simStatus">Design mode</span></div>
+          <button class="speed-btn" id="speedBtn" type="button" title="Toggle simulation speed">SPEED ×1</button>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="world" width="960" height="460" aria-label="Pixel art animation of users, brokers and database nodes"></canvas>
+          <div class="event-banner" id="eventBanner" role="status">Network partition!</div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><label><span>served</span><b id="servedValue">—</b></label><div class="meter" id="servedMeter"><i></i></div></div>
+          <div class="metric"><label><span>p95 latency</span><b id="latencyValue">—</b></label><div class="meter" id="latencyMeter"><i></i></div></div>
+          <div class="metric"><label><span>correctness</span><b id="correctValue">—</b></label><div class="meter" id="correctMeter"><i></i></div></div>
+          <div class="metric"><label><span>cost</span><b id="costValue">—</b></label><div class="meter" id="costMeter"><i></i></div></div>
+        </div>
+        <div class="ticker" id="ticker" aria-live="polite">Choose an architecture, then open the traffic gates.</div>
+      </section>
+
+      <section class="panel controls-panel" aria-labelledby="controlTitle">
+        <h2 class="panel-title" id="controlTitle">Architecture console</h2>
+        <div class="panel-body">
+          <div class="control-group">
+            <div class="control-label"><span>CAP behavior</span><small>during partition</small></div>
+            <div class="choice-row" id="capChoices">
+              <button class="choice selected" data-cap="CA" type="button">CA<em>single-site</em></button>
+              <button class="choice" data-cap="CP" type="button">CP<em>reject stale</em></button>
+              <button class="choice" data-cap="AP" type="button">AP<em>keep serving</em></button>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Replicas / shard</span><small>copies</small></div>
+            <div class="stepper"><button type="button" data-step="replicas:-1" aria-label="Remove replica">−</button><output class="stepper-output" id="replicaOut">1</output><button type="button" data-step="replicas:1" aria-label="Add replica">+</button></div>
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Data shards</span><small>work split</small></div>
+            <div class="stepper"><button type="button" data-step="shards:-1" aria-label="Remove shard">−</button><output class="stepper-output" id="shardOut">1</output><button type="button" data-step="shards:1" aria-label="Add shard">+</button></div>
+          </div>
+          <div class="control-group">
+            <div class="control-label"><span>Request path</span><small>delivery</small></div>
+            <div class="choice-row arch" id="archChoices">
+              <button class="choice selected" data-arch="direct" type="button">DIRECT<em>request/response</em></button>
+              <button class="choice" data-arch="pubsub" type="button">PUB/SUB<em>live, ephemeral</em></button>
+              <button class="choice" data-arch="stream" type="button">STREAM<em>durable + replay</em></button>
+              <button class="choice" data-arch="sharded" type="button">SHARDED PUB/SUB<em>topic slots</em></button>
+            </div>
+          </div>
+          <div class="forecast" aria-label="Estimated architecture cost and capacity">
+            <div class="forecast-row"><span>Nodes</span><b id="nodeForecast">1</b></div>
+            <div class="forecast-row"><span>Est. capacity</span><b id="capacityForecast">—</b></div>
+            <div class="forecast-row"><span>Monthly cost</span><b id="costForecast">—</b></div>
+            <div class="forecast-row"><span>Budget headroom</span><b id="headroomForecast">—</b></div>
+          </div>
+          <div class="actions">
+            <button class="primary" id="runBtn" type="button">▶ Run simulation</button>
+            <button class="secondary" id="helpBtn" type="button" aria-label="Open field manual">?</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="legend" aria-label="Animation legend">
+      <span><i style="background:#39c5bb"></i>request</span>
+      <span><i style="background:#60c66a"></i>served</span>
+      <span><i style="background:#e94d5f"></i>failed / stale</span>
+      <span><i style="background:#ffd552"></i>queued</span>
+      <span>Keyboard: <span class="kbd">R</span> run · <span class="kbd">?</span> manual · <span class="kbd">1–3</span> CAP</span>
+    </div>
+  </main>
+
+  <div class="modal" id="welcomeModal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <div class="modal-card">
+      <div class="modal-head"><h2 id="welcomeTitle">WELCOME, ON-CALL ARCHITECT</h2></div>
+      <div class="modal-content">
+        <p>Seven services are about to hit production. You are the database: choose how requests move, how data is split, how many copies exist, and what the system does when the network tears in half.</p>
+        <div class="tutorial-strip">
+          <div class="tutorial-item"><b>1 · READ THE SLA</b>Correctness, availability, durability and budget change every level.</div>
+          <div class="tutorial-item"><b>2 · BUILD</b>Pick CAP behavior, replicas, shards and a request path.</div>
+          <div class="tutorial-item"><b>3 · SURVIVE</b>Watch users, failures, queues, stale reads and infrastructure cost.</div>
+        </div>
+        <p><strong>Important:</strong> “P” is not a feature you can switch off. On partitioned levels, your real CAP choice is whether consistency or availability wins. A cheap design can collapse; an oversized one can fail the budget.</p>
+        <div class="modal-actions"><button class="primary" id="startBtn" type="button">Start shift</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle" hidden>
+    <div class="modal-card">
+      <div class="modal-head"><h2 id="helpTitle">FIELD MANUAL</h2><button class="icon-btn" id="closeHelpBtn" type="button" aria-label="Close manual">×</button></div>
+      <div class="modal-content">
+        <p><strong>CA</strong> is useful shorthand for a non-partitioned/single-node scope: consistent and available while that scope works. It is not a magic answer to a network partition.</p>
+        <p><strong>CP</strong> preserves a single, current truth during a partition. A side without quorum must wait or reject work. Great for money, uniqueness and invariants.</p>
+        <p><strong>AP</strong> lets reachable nodes respond during a partition. Replicas may temporarily disagree and must reconcile later. Great when continued service beats immediate agreement.</p>
+        <p><strong>Shards</strong> split different data/work across nodes, increasing capacity. <strong>Replicas</strong> copy the same shard, improving failure tolerance and often reads, but costing money and write coordination.</p>
+        <p><strong>Direct</strong> is request/response. <strong>Pub/sub</strong> fans live messages to interested subscribers but this game's ephemeral broker cannot replay missed events. <strong>Stream</strong> retains events for acknowledgements, catch-up and replay. <strong>Sharded pub/sub</strong> hashes channels to owning broker shards to reduce cluster-wide fan-out.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="resultTitle" hidden>
+    <div class="modal-card">
+      <div class="modal-head"><h2 id="resultTitle">SHIFT REPORT</h2></div>
+      <div class="modal-content">
+        <div class="result-score">
+          <div class="grade-box" id="gradeBox">B</div>
+          <div><div class="stars" id="resultStars">★★☆</div><h3 id="resultHeadline">Service survived</h3><p id="resultSummary"></p></div>
+        </div>
+        <div class="result-checks" id="resultChecks"></div>
+        <div class="lesson" id="lessonText"></div>
+        <div class="modal-actions"><button class="secondary" id="retryBtn" type="button">Tune & retry</button><button class="primary" id="nextBtn" type="button">Next level →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const levels = [
+      {
+        tag: "WARM-UP", name: "Campus Directory", load: 75, nodeCap: 120, readRatio: 80, budget: 155,
+        text: "One campus, one small directory. Staff need fresh contact data. There is no distributed replica network yet, and the dean wants the least expensive design that works.",
+        slas: ["Serve at least 96% of requests", "Fresh reads; no stale contact records", "Stay under $155 / month"],
+        note: "CAP is not very informative for a lone server. Extra shards and replicas buy little here.",
+        caps: ["CA"], arch: ["direct"], minServed: .96, minCorrect: .98, maxLatency: 180, partition: false,
+        duration: 230, costBase: 20, lesson: "A standalone database avoids replica disagreement, but it remains one failure domain. Calling it CA only describes the assumed non-partitioned scope.", defaults: ["CA",1,1,"direct"]
+      },
+      {
+        tag: "READ STORM", name: "Festival Catalog", load: 390, nodeCap: 105, readRatio: 96, budget: 610,
+        text: "A festival app serves product cards and venue maps. A fiber cut may isolate a zone. Slightly stale descriptions are acceptable; blank pages are not.",
+        slas: ["Serve at least 94% during isolation", "Keep p95 latency below 280 ms", "Stay under $610 / month"],
+        note: "Read-heavy traffic benefits from copies. During the cut, reachable zones should keep answering.",
+        caps: ["AP"], arch: ["direct"], minServed: .94, minCorrect: .75, maxLatency: 280, partition: true,
+        duration: 280, costBase: 20, lesson: "AP keeps reachable replicas serving during a partition. Staleness is tolerable here, and replicas add useful read capacity and fault tolerance.", defaults: ["CA",1,1,"direct"]
+      },
+      {
+        tag: "HARD INVARIANT", name: "Unique Username Gate", load: 245, nodeCap: 95, readRatio: 35, budget: 760,
+        text: "Thousands of students claim usernames at registration. Two people must never successfully claim the same name—even when one replica is isolated.",
+        slas: ["Correctness at least 99%", "Serve at least 62% during the cut", "Stay under $760 / month"],
+        note: "A failed request is safer than two successful owners. Think quorum and an odd replica count.",
+        caps: ["CP"], arch: ["direct"], minServed: .62, minCorrect: .99, maxLatency: 430, partition: true, strict: true,
+        duration: 285, costBase: 20, lesson: "CP rejects or delays work that cannot reach quorum, preserving uniqueness. Availability is sacrificed on the isolated side; three replicas can leave a two-node majority.", defaults: ["AP",2,2,"direct"]
+      },
+      {
+        tag: "LIVE FAN-OUT", name: "Stadium Score Flash", load: 540, nodeCap: 105, readRatio: 100, budget: 870,
+        text: "A live scoreboard pushes the newest score to many screens. Missing one flash is harmless because the next update replaces it. Replaying old flashes would be wasteful.",
+        slas: ["Serve at least 93% of live viewers", "Keep p95 below 240 ms", "Stay under $870 / month"],
+        note: "This is fan-out of transient notifications, not a durable job queue.",
+        caps: ["AP"], arch: ["pubsub"], minServed: .93, minCorrect: .74, maxLatency: 240, partition: true, fanout: true,
+        duration: 295, costBase: 20, lesson: "Ephemeral pub/sub efficiently fans out replaceable live updates. It decouples publishers from subscribers, but disconnected viewers do not receive replay.", defaults: ["AP",2,2,"direct"]
+      },
+      {
+        tag: "NO LOST JOBS", name: "Order Fulfilment", load: 365, nodeCap: 92, readRatio: 25, budget: 1280,
+        text: "Paid orders become warehouse jobs. Consumers restart during deploys. Every accepted job needs acknowledgement, retry and replay; duplicate effects must be controlled.",
+        slas: ["No lost accepted orders", "Correctness at least 98%", "Serve at least 61% during failure"],
+        note: "A notification is not automatically durable state. Consumers need offsets and catch-up.",
+        caps: ["CP"], arch: ["stream"], minServed: .61, minCorrect: .98, maxLatency: 520, partition: true, strict: true, durable: true,
+        duration: 305, costBase: 20, lesson: "A durable stream retains jobs and tracks consumer progress. CP protects authoritative order state; idempotent consumers handle retries without duplicating business effects.", defaults: ["AP",2,3,"pubsub"]
+      },
+      {
+        tag: "GLOBAL CHAT", name: "Creator Chat Wave", load: 980, nodeCap: 100, readRatio: 100, budget: 1510,
+        text: "A creator goes live and chat channels explode. Messages are transient, regional continuity matters, and broadcasting every channel across every broker is melting the cluster bus.",
+        slas: ["Serve at least 92% of viewers", "Keep p95 below 260 ms", "Avoid cluster-wide topic propagation"],
+        note: "Hash channels to slots so propagation stays with the owning shard and its replicas.",
+        caps: ["AP"], arch: ["sharded"], minServed: .92, minCorrect: .72, maxLatency: 270, partition: true, fanout: true,
+        duration: 315, costBase: 20, lesson: "Sharded pub/sub limits a channel's propagation to its owning shard and replicas. It improves scale; it does not make ephemeral messages durable.", defaults: ["AP",2,3,"pubsub"]
+      },
+      {
+        tag: "FINAL BOSS", name: "Black Friday Checkout", load: 760, nodeCap: 110, readRatio: 20, budget: 2180,
+        text: "Checkout is surging while a network link flaps. Inventory cannot be sold twice. Accepted purchase events must survive consumer downtime, yet idle infrastructure will blow the budget.",
+        slas: ["Correctness at least 99%", "Durably retain accepted purchases", "Serve at least 60% and stay in budget"],
+        note: "Combine partitioned capacity, replicated quorum and durable delivery. Watch write coordination cost.",
+        caps: ["CP"], arch: ["stream"], minServed: .60, minCorrect: .99, maxLatency: 650, partition: true, strict: true, durable: true,
+        duration: 330, costBase: 20, lesson: "Real designs compose concerns: shards distribute load, replicas provide quorum/failover, CP protects inventory, and a durable stream lets downstream services catch up.", defaults: ["AP",2,4,"pubsub"]
+      }
+    ];
+
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => [...document.querySelectorAll(s)];
+    const canvas = $("#world");
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+
+    const state = {
+      level: 0, cap: "CA", replicas: 1, shards: 1, arch: "direct", running: false, speed: 1,
+      tick: 0, score: 0, totalScore: 0, stars: Array(levels.length).fill(0), users: [], particles: [],
+      samples: [], metrics: { served: 0, latency: 0, correct: 1, cost: 0 }, lastTime: 0, frameCarry: 0,
+      audio: null, eventShown: false
+    };
+
+    const colors = { ink: "#172033", blue: "#2488e8", cyan: "#39c5bb", green: "#60c66a", yellow: "#ffd552", orange: "#f28b4b", red: "#e94d5f", purple: "#7055d9", pale: "#dce6f2" };
+
+    function money(n) { return "$" + Math.round(n); }
+    function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+    function current() { return levels[state.level]; }
+    function selectedNodes() { return state.replicas * state.shards; }
+
+    function architectureCost() {
+      return { direct: 0, pubsub: 85, stream: 190, sharded: 145 }[state.arch];
+    }
+
+    function monthlyCost() {
+      const l = current();
+      return l.costBase + selectedNodes() * 70 + Math.max(0, state.shards - 1) * 18 + architectureCost();
+    }
+
+    function capacityEstimate() {
+      const l = current();
+      const reads = l.readRatio / 100;
+      const replicaReadGain = 1 + (state.replicas - 1) * (.62 * reads);
+      const writeCoordPenalty = 1 - Math.min(.34, (state.replicas - 1) * .07 * (1 - reads));
+      const splitEfficiency = 1 - Math.max(0, state.shards - 1) * .018;
+      let path = 1;
+      if (l.fanout) path = state.arch === "sharded" ? 1.48 : state.arch === "pubsub" ? 1.24 : state.arch === "stream" ? .9 : .66;
+      if (l.durable && state.arch === "stream") path = 1.06;
+      return l.nodeCap * state.shards * replicaReadGain * writeCoordPenalty * splitEfficiency * path;
+    }
+
+    function setupLevel(index) {
+      state.level = index;
+      const l = current();
+      [state.cap, state.replicas, state.shards, state.arch] = l.defaults;
+      state.running = false; state.tick = 0; state.users = []; state.particles = []; state.samples = []; state.eventShown = false;
+      $("#missionTag").textContent = `LEVEL ${index + 1} · ${l.tag}`;
+      $("#missionName").textContent = l.name;
+      $("#missionText").textContent = l.text;
+      $("#loadStat").textContent = l.load + " req/s";
+      $("#capacityStat").textContent = l.nodeCap + " req/s";
+      $("#ratioStat").textContent = l.readRatio + " / " + (100 - l.readRatio);
+      $("#budgetStat").textContent = money(l.budget);
+      $("#slaList").innerHTML = l.slas.map(x => `<li>${x}</li>`).join("");
+      $("#architectNote").innerHTML = `<b>Architect note:</b> ${l.note}`;
+      $("#simStatus").textContent = "Design mode";
+      $("#statusLamp").classList.remove("live");
+      $("#eventBanner").classList.remove("show");
+      $("#ticker").textContent = "Choose an architecture, then open the traffic gates.";
+      $("#runBtn").disabled = false; $("#runBtn").textContent = "▶ Run simulation";
+      updateControls(); updateForecast(); updateProgress(); resetMeters(); drawWorld();
+    }
+
+    function updateControls() {
+      $$('[data-cap]').forEach(b => b.classList.toggle("selected", b.dataset.cap === state.cap));
+      $$('[data-arch]').forEach(b => b.classList.toggle("selected", b.dataset.arch === state.arch));
+      $("#replicaOut").textContent = state.replicas;
+      $("#shardOut").textContent = state.shards;
+    }
+
+    function updateForecast() {
+      const l = current(); const cost = monthlyCost(); const cap = capacityEstimate();
+      $("#nodeForecast").textContent = selectedNodes();
+      $("#capacityForecast").textContent = Math.round(cap) + " req/s";
+      $("#costForecast").textContent = money(cost);
+      const head = l.budget - cost;
+      $("#headroomForecast").textContent = (head >= 0 ? "+" : "") + money(head);
+      $("#headroomForecast").classList.toggle("over", head < 0);
+      drawWorld();
+    }
+
+    function updateProgress() {
+      $("#levelTrack").innerHTML = levels.map((_, i) => `<span class="level-dot ${i === state.level ? "active" : state.stars[i] ? "done" : ""}" aria-label="Level ${i+1}${state.stars[i] ? ", completed" : ""}">${i+1}</span>`).join("");
+      $("#totalScore").textContent = String(state.totalScore).padStart(4,"0");
+      $("#totalStars").textContent = state.stars.reduce((a,b) => a+b, 0);
+    }
+
+    function resetMeters() {
+      ["served","latency","correct","cost"].forEach(k => {
+        $("#"+k+"Value").textContent = "—";
+        const m = $("#"+k+"Meter"); m.className = "meter"; m.querySelector("i").style.width = "0%";
+      });
+    }
+
+    function setMeter(name, value, text, inverse = false) {
+      const m = $("#"+name+"Meter"); const pct = clamp(value, 0, 1) * 100;
+      $("#"+name+"Value").textContent = text;
+      m.querySelector("i").style.width = pct + "%";
+      const quality = inverse ? 1 - value : value;
+      m.className = "meter " + (quality < .55 ? "bad" : quality < .78 ? "warn" : "");
+    }
+
+    function beep(freq=440, duration=.05, type="square") {
+      try {
+        state.audio ||= new (window.AudioContext || window.webkitAudioContext)();
+        const o = state.audio.createOscillator(); const g = state.audio.createGain();
+        o.type = type; o.frequency.value = freq; g.gain.setValueAtTime(.035, state.audio.currentTime);
+        g.gain.exponentialRampToValueAtTime(.001, state.audio.currentTime + duration);
+        o.connect(g).connect(state.audio.destination); o.start(); o.stop(state.audio.currentTime + duration);
+      } catch (_) {}
+    }
+
+    function startSimulation() {
+      if (state.running) return;
+      state.running = true; state.tick = 0; state.samples = []; state.users = []; state.particles = []; state.eventShown = false; state.frameCarry = 0;
+      $("#runBtn").disabled = true; $("#runBtn").textContent = "Simulation live…";
+      $("#statusLamp").classList.add("live"); $("#simStatus").textContent = "Traffic live";
+      $("#ticker").textContent = "Traffic gates open. Baseline load is climbing…";
+      beep(520,.07); requestAnimationFrame(loop);
+    }
+
+    function partitionActive(progress) {
+      return current().partition && progress >= .34 && progress <= .68;
+    }
+
+    function computeMetrics(progress) {
+      const l = current();
+      const spike = progress < .16 ? .55 + progress * 2.8 : progress > .78 ? 1.05 : 1;
+      const wave = 1 + Math.sin(state.tick * .12) * .05;
+      const incoming = l.load * spike * wave;
+      let cap = capacityEstimate();
+      const partition = partitionActive(progress);
+      let availability = 1;
+
+      if (partition) {
+        if (state.cap === "AP") availability = state.replicas >= 2 ? .985 : .68;
+        else if (state.cap === "CP") availability = state.replicas >= 3 && state.replicas % 2 === 1 ? .67 : state.replicas >= 2 ? .52 : .28;
+        else availability = .24;
+      }
+      if (state.replicas === 1 && l.partition) availability *= partition ? .76 : .97;
+      const util = incoming / Math.max(1, cap);
+      const capacityServe = Math.min(1, 1 / Math.max(1, util));
+      let served = capacityServe * availability;
+
+      let latency = 52 + 30 * state.shards + Math.max(0, util - .55) ** 2 * 510;
+      if (state.cap === "CP") latency += (state.replicas - 1) * 21;
+      if (state.arch === "stream") latency += 58;
+      if (state.arch === "direct" && l.fanout) latency += 120;
+      if (partition && state.cap === "CP") latency += 115;
+
+      let correct = 1;
+      if (partition && state.cap === "AP") correct = l.strict ? .64 : .84;
+      if (partition && state.cap === "CA") correct = .72;
+      if (l.durable && state.arch !== "stream") correct *= .74;
+      if (l.fanout && !["pubsub","sharded"].includes(state.arch)) served *= .78;
+      if (l.arch[0] === "sharded" && state.arch === "pubsub") { served *= .83; latency += 125; }
+      if (l.arch[0] === "direct" && state.arch !== "direct") latency += 70;
+      if (l.arch[0] === "pubsub" && state.arch === "stream") latency += 55;
+      if (state.replicas < 2 && l.partition) correct *= .96;
+
+      return { served: clamp(served,0,1), latency: Math.round(latency), correct: clamp(correct,0,1), cost: monthlyCost(), incoming, cap, util, partition };
+    }
+
+    function simulationStep() {
+      const l = current(); state.tick += state.speed;
+      const progress = state.tick / l.duration;
+      const m = computeMetrics(progress); state.metrics = m; state.samples.push(m);
+
+      const spawnCount = Math.max(1, Math.round((m.incoming / 175) * state.speed));
+      for (let i=0; i<spawnCount && state.users.length < 85; i++) {
+        const ok = Math.random() < m.served; const stale = Math.random() > m.correct;
+        state.users.push({ p: 0, lane: Math.floor(Math.random()*7), shard: Math.floor(Math.random()*state.shards), ok, stale, wait: Math.max(0, m.util - .82) * (12 + Math.random()*22), wobble: Math.random()*6 });
+      }
+      state.users.forEach(u => {
+        if (u.wait > 0 && u.p > .44 && u.p < .55) { u.wait -= state.speed; return; }
+        u.p += (.009 + Math.random()*.003) * state.speed;
+      });
+      state.users = state.users.filter(u => u.p < 1.08);
+
+      if (m.partition && !state.eventShown) {
+        state.eventShown = true; $("#eventBanner").textContent = "⚡ NETWORK PARTITION!"; $("#eventBanner").classList.add("show");
+        $("#ticker").textContent = state.cap === "CP" ? "Partition detected: minority side is rejecting unsafe work." : state.cap === "AP" ? "Partition detected: both sides keep serving; replicas may diverge." : "Partition detected: CA assumption broken; requests are stuck.";
+        beep(130,.3,"sawtooth");
+      }
+      if (!m.partition && state.eventShown && progress > .68) {
+        $("#eventBanner").classList.remove("show");
+        $("#ticker").textContent = state.cap === "AP" ? "Link restored. Replicas are reconciling divergent versions…" : "Link restored. Quorum paths are recovering…";
+      }
+      if (progress > .79 && progress < .8 + .02*state.speed) $("#ticker").textContent = "Final load spike! Queues and node utilization rising…";
+
+      updateLiveMeters(m);
+      if (state.tick >= l.duration) finishSimulation();
+    }
+
+    function updateLiveMeters(m) {
+      const l = current();
+      setMeter("served", m.served, Math.round(m.served*100)+"%");
+      setMeter("latency", clamp(m.latency/(l.maxLatency*1.7),0,1), m.latency+" ms", true);
+      setMeter("correct", m.correct, Math.round(m.correct*100)+"%");
+      setMeter("cost", clamp(m.cost/(l.budget*1.35),0,1), money(m.cost), true);
+    }
+
+    function average(key, start=.18) {
+      const arr = state.samples.slice(Math.floor(state.samples.length*start));
+      return arr.reduce((s,x) => s+x[key],0) / Math.max(1,arr.length);
+    }
+
+    function partitionAverage(key) {
+      const partitionSamples = state.samples.filter(x => x.partition);
+      return partitionSamples.reduce((s,x) => s+x[key],0) / Math.max(1,partitionSamples.length);
+    }
+
+    function finishSimulation() {
+      state.running = false; $("#statusLamp").classList.remove("live"); $("#simStatus").textContent = "Run complete";
+      const l = current();
+      const served = l.partition ? partitionAverage("served") : average("served");
+      const correct = l.partition ? partitionAverage("correct") : average("correct");
+      const latency = average("latency"), cost = monthlyCost();
+      const checks = [
+        { name: "Partition behavior", ok: l.caps.includes(state.cap), value: `${state.cap} selected`, fix: l.partition ? `Workload needs ${l.caps.join(" or ")} during the partition` : "A single-site CA scope is sufficient" },
+        { name: "Request path", ok: l.arch.includes(state.arch), value: archName(state.arch), fix: `Use ${l.arch.map(archName).join(" or ")}` },
+        { name: "Traffic served", ok: served >= l.minServed, value: Math.round(served*100)+`% / ${Math.round(l.minServed*100)}%`, fix: "Add shard capacity, useful replicas, or a better fan-out path" },
+        { name: "Correctness & durability", ok: correct >= l.minCorrect, value: Math.round(correct*100)+`% / ${Math.round(l.minCorrect*100)}%`, fix: l.durable && state.arch !== "stream" ? "Ephemeral messages cannot be replayed; choose a stream" : "Choose behavior that protects this workload's truth" },
+        { name: "Latency", ok: latency <= l.maxLatency, value: Math.round(latency)+` ms / ${l.maxLatency} ms`, fix: "Reduce overload or unnecessary coordination" },
+        { name: "Infrastructure budget", ok: cost <= l.budget, value: `${money(cost)} / ${money(l.budget)}`, fix: "Remove idle copies/shards or simplify the request path" }
+      ];
+      const requiredPass = checks.every(c => c.ok);
+      const passCount = checks.filter(c => c.ok).length;
+      let stars = requiredPass ? (cost < l.budget*.82 && served > l.minServed+.035 ? 3 : 2) : (passCount >= 4 ? 1 : 0);
+      const points = requiredPass ? 700 + stars*150 + Math.max(0, Math.round((l.budget-cost)*2)) : passCount*45;
+      const previous = state.stars[state.level];
+      if (stars > previous) { state.stars[state.level] = stars; state.totalScore += points; }
+      updateProgress(); showResult(checks, stars, requiredPass, points, {served,latency,correct,cost});
+      beep(requiredPass ? 760 : 180, requiredPass ? .16 : .24, requiredPass ? "square" : "sawtooth");
+      if (requiredPass) confetti();
+    }
+
+    function archName(a) { return {direct:"Direct request/response",pubsub:"Ephemeral pub/sub",stream:"Durable stream",sharded:"Sharded pub/sub"}[a]; }
+
+    function showResult(checks, stars, passed, points, summary) {
+      const l = current();
+      $("#gradeBox").textContent = passed ? (stars === 3 ? "S" : "A") : stars ? "C" : "F";
+      $("#gradeBox").style.background = passed ? "var(--green)" : stars ? "var(--yellow)" : "var(--red)";
+      $("#resultStars").textContent = "★".repeat(stars) + "☆".repeat(3-stars);
+      $("#resultHeadline").textContent = passed ? (stars === 3 ? "Elegant and resilient!" : "SLA passed") : "SLA breach — tune the design";
+      $("#resultSummary").textContent = `${Math.round(summary.served*100)}% served · ${Math.round(summary.latency)} ms p95 · ${Math.round(summary.correct*100)}% correct · ${money(summary.cost)} cost · +${points} pts`;
+      $("#resultChecks").innerHTML = checks.map(c => `<div class="result-check"><b class="${c.ok?'ok':'no'}">${c.ok?'✓':'×'}</b><span><strong>${c.name}</strong>${c.ok?'':`<br><small>${c.fix}</small>`}</span><b>${c.value}</b></div>`).join("");
+      $("#lessonText").innerHTML = `<strong>WHY IT MATTERS</strong><br>${l.lesson}`;
+      $("#nextBtn").hidden = !passed;
+      $("#nextBtn").textContent = state.level === levels.length-1 ? "Finish shift →" : "Next level →";
+      $("#resultModal").hidden = false;
+      setTimeout(() => $(passed ? "#nextBtn" : "#retryBtn").focus(), 50);
+    }
+
+    function nextLevel() {
+      $("#resultModal").hidden = true;
+      if (state.level < levels.length - 1) setupLevel(state.level + 1);
+      else showVictory();
+    }
+
+    function showVictory() {
+      const stars = state.stars.reduce((a,b)=>a+b,0);
+      $("#resultModal").hidden = false;
+      $("#resultTitle").textContent = "SHIFT COMPLETE";
+      $("#gradeBox").textContent = stars >= 19 ? "S" : stars >= 14 ? "A" : "B";
+      $("#gradeBox").style.background = "var(--cyan)";
+      $("#resultStars").textContent = `${stars} / 21 ★`;
+      $("#resultHeadline").textContent = "The cluster lives to serve another day.";
+      $("#resultSummary").textContent = `Final score: ${state.totalScore}. You balanced load, truth, failure behavior and cost across seven services.`;
+      $("#resultChecks").innerHTML = "";
+      $("#lessonText").innerHTML = "<strong>ARCHITECT'S RULE</strong><br>There is no universally best architecture. Start with the operation, its failure semantics and its SLA; then choose the smallest design that meets them.";
+      $("#retryBtn").textContent = "Replay final level";
+      $("#nextBtn").hidden = false; $("#nextBtn").textContent = "Restart game";
+      $("#nextBtn").onclick = () => { state.stars.fill(0); state.totalScore=0; $("#resultModal").hidden=true; setupLevel(0); };
+      confetti(80);
+    }
+
+    function confetti(count=36) {
+      for (let i=0;i<count;i++) {
+        const e=document.createElement("i"); e.className="confetti"; e.style.left=Math.random()*100+"vw"; e.style.top="-10px";
+        e.style.background=[colors.green,colors.yellow,colors.cyan,colors.red,colors.purple][i%5]; e.style.setProperty("--dx",(Math.random()*180-90)+"px");
+        e.style.animationDelay=Math.random()*.5+"s"; document.body.appendChild(e); setTimeout(()=>e.remove(),2400);
+      }
+    }
+
+    function loop(time) {
+      if (!state.running) { drawWorld(); return; }
+      if (!state.lastTime) state.lastTime=time;
+      state.frameCarry += (time-state.lastTime); state.lastTime=time;
+      const interval = 42;
+      while(state.frameCarry >= interval && state.running) { simulationStep(); state.frameCarry -= interval; }
+      drawWorld();
+      if (state.running) requestAnimationFrame(loop); else state.lastTime=0;
+    }
+
+    function pixelText(text,x,y,color="#fff",size=12,align="left") {
+      ctx.fillStyle=color; ctx.font=`bold ${size}px "Courier New", monospace`; ctx.textAlign=align; ctx.fillText(text,x,y); ctx.textAlign="left";
+    }
+
+    function drawWorld() {
+      const w=960,h=460,l=current();
+      ctx.fillStyle="#101827"; ctx.fillRect(0,0,w,h);
+      ctx.strokeStyle="#1d2b42"; ctx.lineWidth=1;
+      for(let x=0;x<w;x+=24){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+      for(let y=0;y<h;y+=24){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+      ctx.fillStyle="#152238"; ctx.fillRect(0,350,w,110);
+      ctx.fillStyle="#243451"; for(let x=0;x<w;x+=48)ctx.fillRect(x,390,24,4);
+
+      pixelText("USERS",72,38,"#9fb0cb",11,"center");
+      pixelText(state.arch==="direct"?"API GATEWAY":state.arch==="stream"?"DURABLE LOG":state.arch==="sharded"?"TOPIC ROUTER":"BROKER",315,38,"#9fb0cb",11,"center");
+      pixelText("DATA SHARDS × REPLICAS",690,38,"#9fb0cb",11,"center");
+
+      drawGateway(315,205);
+      const positions=nodePositions();
+      positions.forEach((p,i)=>drawServer(p.x,p.y,p.shard,p.replica,i));
+
+      ctx.strokeStyle="#334766";ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(165,205);ctx.lineTo(270,205);ctx.stroke();
+      positions.forEach(p=>{ctx.beginPath();ctx.moveTo(360,205);ctx.lineTo(p.x-26,p.y);ctx.stroke();});
+
+      if(state.running && partitionActive(state.tick/l.duration)) drawPartition();
+      state.users.forEach(drawUser);
+      drawCrowd();
+
+      if(!state.running) {
+        ctx.fillStyle="rgba(7,12,22,.54)";ctx.fillRect(0,0,w,h);
+        pixelText("ARCHITECTURE PREVIEW",480,207,"#fff",18,"center");
+        pixelText(`${state.cap}  •  ${state.shards} SHARD${state.shards>1?'S':''}  •  ${state.replicas} REPLICA${state.replicas>1?'S':''}`,480,232,colors.yellow,13,"center");
+      }
+    }
+
+    function nodePositions() {
+      const out=[]; const cols=Math.min(4,state.shards); const baseX=505; const colGap=110;
+      for(let s=0;s<state.shards;s++){
+        const col=s%4,row=Math.floor(s/4); const x=baseX+col*colGap;
+        for(let r=0;r<state.replicas;r++){
+          const y=90+r*75+row*28; out.push({x,y,shard:s,replica:r});
+        }
+      }
+      return out;
+    }
+
+    function drawGateway(x,y) {
+      const c=state.arch==="stream"?colors.orange:state.arch==="direct"?colors.blue:colors.purple;
+      ctx.fillStyle="#070b12";ctx.fillRect(x-43,y-55,86,110);ctx.fillStyle=c;ctx.fillRect(x-38,y-50,76,100);
+      ctx.fillStyle="#121a29";ctx.fillRect(x-29,y-37,58,58);
+      if(state.arch==="direct"){
+        ctx.fillStyle=colors.cyan;ctx.fillRect(x-18,y-22,36,8);ctx.fillRect(x-18,y-6,25,8);ctx.fillRect(x-18,y+10,32,8);
+      }else{
+        for(let i=0;i<3;i++){ctx.fillStyle=i===1?colors.yellow:colors.cyan;ctx.fillRect(x-23,y-27+i*18,46-(i*7),7);}
+      }
+      ctx.fillStyle="#fff";ctx.fillRect(x-29,y+32,8,8);ctx.fillRect(x-14,y+32,8,8);
+      pixelText(state.arch==="stream"?"ACK":state.arch==="direct"?"HTTP":"PUB",x,y+76,"#aab8cf",10,"center");
+    }
+
+    function drawServer(x,y,shard,replica,index) {
+      const overloaded=state.running&&state.metrics.util>1.05;
+      const isolated=state.running&&state.metrics.partition&&shard%3===0;
+      ctx.fillStyle="#05080e";ctx.fillRect(x-29,y-31,58,62);
+      ctx.fillStyle=isolated?"#5a2630":overloaded?"#71303a":"#2d4363";ctx.fillRect(x-25,y-27,50,54);
+      ctx.fillStyle=isolated?colors.red:colors.cyan;ctx.fillRect(x-18,y-19,36,7);
+      ctx.fillStyle="#101827";ctx.fillRect(x-18,y-7,36,12);
+      for(let i=0;i<3;i++){ctx.fillStyle=(i+index+Math.floor(state.tick/7))%3===0?colors.yellow:colors.green;ctx.fillRect(x-17+i*11,y+13,6,6);}
+      pixelText(`S${shard+1}.${replica+1}`,x,y+45,isolated?colors.red:"#c7d2e4",9,"center");
+      if(overloaded&&index%2===0) pixelText("!",x+21,y-20,colors.red,15,"center");
+    }
+
+    function drawCrowd(){
+      for(let i=0;i<9;i++){const x=32+(i%3)*45,y=85+Math.floor(i/3)*90;drawPerson(x,y,i%4);}
+    }
+    function drawPerson(x,y,variant=0){
+      const skins=["#f0b98b","#8d5738","#d58e62","#6c3f2b"]; const shirts=[colors.blue,colors.purple,colors.green,colors.orange];
+      ctx.fillStyle=skins[variant%4];ctx.fillRect(x-6,y-15,12,12);ctx.fillStyle="#111827";ctx.fillRect(x-8,y-17,16,5);
+      ctx.fillStyle=shirts[variant%4];ctx.fillRect(x-9,y-1,18,18);ctx.fillStyle="#0a0f18";ctx.fillRect(x-9,y+17,7,10);ctx.fillRect(x+2,y+17,7,10);
+    }
+
+    function drawUser(u){
+      let x,y; const laneY=85+u.lane*39;
+      if(u.p<.34){x=145+(u.p/.34)*170;y=laneY+(205-laneY)*(u.p/.34);}
+      else if(u.p<.67){const t=(u.p-.34)/.33;const nodes=nodePositions();const target=nodes.find(n=>n.shard===u.shard)||nodes[0];x=315+(target.x-315)*t;y=205+(target.y-205)*t;}
+      else {const t=(u.p-.67)/.33;const nodes=nodePositions();const target=nodes.find(n=>n.shard===u.shard)||nodes[0];x=target.x+(910-target.x)*t;y=target.y+(205-target.y)*t;}
+      const c=u.wait>0?colors.yellow:!u.ok||u.stale?colors.red:u.p>.67?colors.green:colors.cyan;
+      ctx.fillStyle=c;ctx.fillRect(Math.round(x)-4,Math.round(y)-4,8,8);ctx.fillStyle="#fff";ctx.fillRect(Math.round(x)-1,Math.round(y)-1,2,2);
+      if(u.wait>0){ctx.strokeStyle=c;ctx.strokeRect(Math.round(x)-7,Math.round(y)-7,14,14);}
+    }
+
+    function drawPartition(){
+      ctx.fillStyle="rgba(233,77,95,.08)";ctx.fillRect(455,0,18,460);
+      ctx.strokeStyle=colors.red;ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(464,45);
+      for(let y=45;y<420;y+=35)ctx.lineTo(464+(y%70?12:-12),y);ctx.stroke();
+      pixelText("LINK DOWN",464,440,colors.red,11,"center");
+    }
+
+    $$('[data-cap]').forEach(b=>b.addEventListener("click",()=>{if(state.running)return;state.cap=b.dataset.cap;updateControls();updateForecast();beep(380,.03);}));
+    $$('[data-arch]').forEach(b=>b.addEventListener("click",()=>{if(state.running)return;state.arch=b.dataset.arch;updateControls();updateForecast();beep(420,.03);}));
+    $$('[data-step]').forEach(b=>b.addEventListener("click",()=>{
+      if(state.running)return;const [key,d]=b.dataset.step.split(":");state[key]=clamp(state[key]+Number(d),1,key==="replicas"?5:6);updateControls();updateForecast();beep(330+state[key]*30,.03);
+    }));
+    $("#runBtn").addEventListener("click",startSimulation);
+    $("#speedBtn").addEventListener("click",()=>{state.speed=state.speed===1?2:1;$("#speedBtn").textContent=`SPEED ×${state.speed}`;});
+    $("#startBtn").addEventListener("click",()=>{$("#welcomeModal").hidden=true;beep(600,.08);});
+    $("#helpBtn").addEventListener("click",()=>{$("#helpModal").hidden=false;$("#closeHelpBtn").focus();});
+    $("#closeHelpBtn").addEventListener("click",()=>{$("#helpModal").hidden=true;$("#helpBtn").focus();});
+    $("#retryBtn").addEventListener("click",()=>{$("#resultModal").hidden=true;$("#resultTitle").textContent="SHIFT REPORT";$("#retryBtn").textContent="Tune & retry";$("#nextBtn").onclick=nextLevel;state.users=[];state.tick=0;$("#simStatus").textContent="Design mode";$("#runBtn").disabled=false;$("#runBtn").textContent="▶ Run simulation";resetMeters();drawWorld();});
+    $("#nextBtn").onclick=nextLevel;
+
+    window.addEventListener("keydown",e=>{
+      if(e.key==="Escape"){$("#helpModal").hidden=true;return;}
+      if(!$("#welcomeModal").hidden||!$("#resultModal").hidden)return;
+      if(e.key.toLowerCase()==="r")startSimulation();
+      if(e.key==="?"){$("#helpModal").hidden=false;}
+      if(["1","2","3"].includes(e.key)&&!state.running){state.cap=["CA","CP","AP"][Number(e.key)-1];updateControls();updateForecast();}
+    });
+
+    setupLevel(0);
+  })();
+  </script>
+</body>
+</html>
